@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blinkit Sales Analysis Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <i class="fa-solid fa-bolt logo-icon"></i>
+        <div class="logo-text">
+          <h1>blinkit</h1>
+          <span>Sales Insights Portal</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="reset-filters" class="btn btn-secondary">
+          <i class="fa-solid fa-arrows-rotate"></i> Reset Filters
+        </button>
+        <div class="live-indicator">
+          <span class="dot"></span> Real-Time Source
+        </div>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <!-- Sidebar Filters -->
+      <aside class="sidebar-filters">
+        <div class="filter-section-header">
+          <h3><i class="fa-solid fa-filter"></i> Interactive Slicers</h3>
+        </div>
+
+        <!-- Filter: Fat Content -->
+        <div class="filter-group">
+          <label class="filter-label">Item Fat Content</label>
+          <div class="checkbox-list" id="filter-fat-content">
+            <label class="checkbox-container">
+              <input type="checkbox" value="Low Fat" checked>
+              <span class="checkmark"></span>
+              Low Fat
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" value="Regular" checked>
+              <span class="checkmark"></span>
+              Regular
+            </label>
+          </div>
+        </div>
+
+        <!-- Filter: Outlet Size -->
+        <div class="filter-group">
+          <label class="filter-label">Outlet Size</label>
+          <div class="checkbox-list" id="filter-outlet-size">
+            <label class="checkbox-container">
+              <input type="checkbox" value="Small" checked>
+              <span class="checkmark"></span>
+              Small
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" value="Medium" checked>
+              <span class="checkmark"></span>
+              Medium
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" value="High" checked>
+              <span class="checkmark"></span>
+              High
+            </label>
+          </div>
+        </div>
+
+        <!-- Filter: Outlet Location -->
+        <div class="filter-group">
+          <label class="filter-label">Outlet Location</label>
+          <div class="checkbox-list" id="filter-outlet-location">
+            <label class="checkbox-container">
+              <input type="checkbox" value="Tier 1" checked>
+              <span class="checkmark"></span>
+              Tier 1
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" value="Tier 2" checked>
+              <span class="checkmark"></span>
+              Tier 2
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" value="Tier 3" checked>
+              <span class="checkmark"></span>
+              Tier 3
+            </label>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <p>Total Records: <strong id="records-count">8,523</strong></p>
+        </div>
+      </aside>
+
+      <!-- Dashboard Content -->
+      <main class="dashboard-content">
+        <!-- KPI Row -->
+        <div class="kpi-grid">
+          <div class="kpi-card ripple">
+            <div class="kpi-icon-wrapper sales-icon">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Total Sales</span>
+              <h2 class="kpi-value" id="kpi-total-sales">$0.00M</h2>
+              <span class="kpi-subtext"><i class="fa-solid fa-arrow-trend-up"></i> Gross revenue</span>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+
+          <div class="kpi-card ripple">
+            <div class="kpi-icon-wrapper avg-sales-icon">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Average Sales</span>
+              <h2 class="kpi-value" id="kpi-avg-sales">$0.00</h2>
+              <span class="kpi-subtext"><i class="fa-solid fa-cart-shopping"></i> Per transaction</span>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+
+          <div class="kpi-card ripple">
+            <div class="kpi-icon-wrapper items-icon">
+              <i class="fa-solid fa-boxes-stacked"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Number of Items</span>
+              <h2 class="kpi-value" id="kpi-num-items">0</h2>
+              <span class="kpi-subtext"><i class="fa-solid fa-tags"></i> Distinct items sold</span>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+
+          <div class="kpi-card ripple">
+            <div class="kpi-icon-wrapper rating-icon">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="kpi-info">
+              <span class="kpi-title">Average Rating</span>
+              <h2 class="kpi-value" id="kpi-avg-rating">0.00</h2>
+              <span class="kpi-subtext"><i class="fa-solid fa-thumbs-up"></i> Customer feedback</span>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+        </div>
+
+        <!-- Charts Grid Row 1 -->
+        <div class="charts-grid-two">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3><i class="fa-solid fa-chart-line"></i> Outlet Establishment Trend</h3>
+              <p>Sales growth by year of outlet establishment</p>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-establishment"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3><i class="fa-solid fa-chart-pie"></i> Fat Content & Outlet Size Analysis</h3>
+              <p>Breakdown of sales share</p>
+            </div>
+            <div class="chart-flex-container">
+              <div class="donut-sub-container">
+                <span class="donut-title">Fat Content</span>
+                <canvas id="chart-fat-content"></canvas>
+              </div>
+              <div class="donut-sub-container">
+                <span class="donut-title">Outlet Size</span>
+                <canvas id="chart-outlet-size"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid Row 2 -->
+        <div class="charts-grid-two">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3><i class="fa-solid fa-chart-bar"></i> Sales by Item Type</h3>
+              <p>Revenue generated across various food and household categories</p>
+            </div>
+            <div class="chart-container-large">
+              <canvas id="chart-item-types"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3><i class="fa-solid fa-layer-group"></i> Outlet Location & Size Matrix</h3>
+              <p>Sales distribution across regional tiers</p>
+            </div>
+            <div class="chart-container-large">
+              <canvas id="chart-location-size"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outlet Type Table -->
+        <div class="table-card">
+          <div class="table-card-header">
+            <div>
+              <h3><i class="fa-solid fa-store"></i> Outlet Type Comparison</h3>
+              <p>Comprehensive performance breakdown by format type</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="outlet-type-table">
+              <thead>
+                <tr>
+                  <th>Outlet Type</th>
+                  <th>Total Sales</th>
+                  <th>No. of Items</th>
+                  <th>Avg Sales</th>
+                  <th>Avg Rating</th>
+                  <th>Avg Visibility</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via index.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Data Script -->
+  <script src="data.js"></script>
+  <!-- Chart & Filter Logic -->
+  <script src="index.js"></script>
+</body>
+</html>
